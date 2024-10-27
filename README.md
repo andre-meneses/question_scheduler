@@ -38,13 +38,8 @@
    - [API Reference](#api-reference)
    - [Database Schema](#database-schema)
    - [Error Handling](#error-handling)
-9. [Troubleshooting](#troubleshooting)
-   - [Common Issues](#common-issues)
-   - [FAQ](#faq)
+9. [FAQ](#faq)
 10. [Contributing](#contributing)
-    - [Development Setup](#development-setup)
-    - [Coding Standards](#coding-standards)
-    - [Pull Request Process](#pull-request-process)
 11. [Future Roadmap](#future-roadmap)
 12. [License](#license)
 13. [Acknowledgments](#acknowledgments)
@@ -307,12 +302,6 @@ interface Attempt {
 3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
-
-### Development Guidelines
-- Follow ESLint configuration
-- Write unit tests for new features
-- Update documentation as needed
-- Maintain existing code style
 
 ## Future Roadmap
 
