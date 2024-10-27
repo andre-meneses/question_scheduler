@@ -3,23 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Question Scheduler - Mathematical Learning System</title>
+    <title>Question Scheduler</title>
+    
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+    
+    <!-- Your existing styles -->
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
-
-    <!-- The loading of KaTeX is deferred to speed up page rendering -->
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script>
-
-    <!-- To automatically render math in text elements, include the auto-render extension: -->
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous"
-        onload="renderMathInElement(document.body);"></script>
+    
+    <!-- KaTeX JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
 </head>
 <body>
     <div class="container">
-        <header class="header">
+        <div class="header">
             <h1>Question Scheduler</h1>
             <p>Mathematical Learning System</p>
-        </header>
+        </div>
 
         <div class="stats">
             <div class="stat-card">
@@ -49,8 +50,10 @@
         <div id="currentTab" class="card">
             <h2>Current Question</h2>
             <div id="currentQuestion">
-                <p>No question selected</p>
-                <button class="btn" onclick="handleNextQuestion()">Get Next Question</button>
+                <div class="empty-state">
+                    <p>No question selected</p>
+                    <button class="btn" onclick="handleNextQuestion()">Get Next Question</button>
+                </div>
             </div>
         </div>
 
@@ -59,16 +62,18 @@
             <form id="addQuestionForm">
                 <div class="form-group">
                     <label for="source">Source</label>
-                    <input type="text" id="source" required placeholder="e.g., Rudin Chapter 3">
+                    <input type="text" id="source" required>
                 </div>
+
                 <div class="form-group">
                     <label for="problem">Problem Description</label>
-                    <textarea id="problem" required rows="4" placeholder="Enter the problem description. Use $ for inline LaTeX and $$ for display LaTeX."></textarea>
+                    <textarea id="problem" rows="4" required></textarea>
                     <div class="preview-container">
                         <h4>Preview:</h4>
                         <div id="problemPreview" class="latex-preview"></div>
                     </div>
                 </div>
+
                 <div class="form-group">
                     <label for="totalTime">Total Time Allocation (hours)</label>
                     <select id="totalTime" required>
@@ -78,30 +83,74 @@
                         <option value="12">12 hours</option>
                     </select>
                 </div>
+
                 <div class="form-group">
                     <label for="subject">Subject Matter</label>
-                    <input type="text" id="subject" required placeholder="e.g., Real Analysis">
+                    <input type="text" id="subject" required>
                 </div>
+
                 <div class="form-group">
                     <label class="checkbox-label">
                         <input type="checkbox" id="neverLookUp">
                         Never Look Up (solution should never be viewed)
                     </label>
                 </div>
+
                 <button type="submit" class="btn">Add Question</button>
             </form>
         </div>
 
         <div id="listTab" class="card" style="display: none;">
             <h2>All Questions</h2>
-            <div id="questionList" class="question-list">
-                <!-- Questions will be populated here -->
-            </div>
+            <div id="questionList" class="question-list"></div>
         </div>
     </div>
 
     <script src="mockData.js"></script>
     <script src="scheduler.js"></script>
     <script src="app.js"></script>
+    
+    <!-- Initialize KaTeX Auto-render -->
+    <script>
+        // Initialize KaTeX Auto-render
+        document.addEventListener("DOMContentLoaded", function() {
+            // Initialize KaTeX auto-render
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: "$$", right: "$$", display: true},
+                    {left: "\\[", right: "\\]", display: true},
+                    {left: "$", right: "$", display: false},
+                    {left: "\\(", right: "\\)", display: false}
+                ],
+                throwOnError: false,
+                trust: true
+            });
+            
+            // Add MutationObserver to handle dynamic content
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.addedNodes.length) {
+                        mutation.addedNodes.forEach(function(node) {
+                            if (node.nodeType === 1) { // ELEMENT_NODE
+                                renderMathInElement(node, {
+                                    delimiters: [
+                                        {left: "$$", right: "$$", display: true},
+                                        {left: "\\[", right: "\\]", display: true},
+                                        {left: "$", right: "$", display: false},
+                                        {left: "\\(", right: "\\)", display: false}
+                                    ],
+                                    throwOnError: false,
+                                    trust: true
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+
+            // Start observing the document with the configured parameters
+            observer.observe(document.body, { childList: true, subtree: true });
+        });
+    </script>
 </body>
 </html>

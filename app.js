@@ -34,15 +34,62 @@ function handleLatexPreview() {
     latexPreviewTimeout = setTimeout(() => {
         const problemText = document.getElementById('problem').value;
         const previewDiv = document.getElementById('problemPreview');
-        previewDiv.innerHTML = problemText;
         
-        // Trigger MathJax to process the new content
-        if (window.MathJax) {
-            MathJax.typesetClear([previewDiv]);
-            MathJax.typesetPromise([previewDiv]).catch((err) => console.log('MathJax error:', err));
+        try {
+            // First clear the preview div
+            previewDiv.innerHTML = '';
+            
+            // Split by display math delimiters (\[...\] and $$...$$)
+            const parts = problemText.split(/(\$\$[^$]*\$\$|\\\[[^\]]*\\\])/g);
+            
+            parts.forEach(part => {
+                if ((part.startsWith('$$') && part.endsWith('$$')) || 
+                    (part.startsWith('\\[') && part.endsWith('\\]'))) {
+                    // Display math
+                    const mathText = part.startsWith('$$') ? 
+                        part.slice(2, -2) : 
+                        part.slice(2, -2);  // Remove \[ and \]
+                    const mathDiv = document.createElement('div');
+                    katex.render(mathText, mathDiv, {
+                        displayMode: true,
+                        throwOnError: false
+                    });
+                    previewDiv.appendChild(mathDiv);
+                } else {
+                    // Regular text potentially containing inline math
+                    // Split by inline math delimiters ($...$ and \(...\))
+                    const inlineParts = part.split(/(\$[^$]*\$|\\\([^)]*\\\))/g);
+                    const textDiv = document.createElement('div');
+                    
+                    inlineParts.forEach(inlinePart => {
+                        if ((inlinePart.startsWith('$') && inlinePart.endsWith('$')) ||
+                            (inlinePart.startsWith('\\(') && inlinePart.endsWith('\\)'))) {
+                            // Inline math
+                            const inlineMathText = inlinePart.startsWith('$') ?
+                                inlinePart.slice(1, -1) :
+                                inlinePart.slice(2, -2);  // Remove \( and \)
+                            const span = document.createElement('span');
+                            katex.render(inlineMathText, span, {
+                                displayMode: false,
+                                throwOnError: false
+                            });
+                            textDiv.appendChild(span);
+                        } else {
+                            // Regular text
+                            textDiv.appendChild(document.createTextNode(inlinePart));
+                        }
+                    });
+                    
+                    previewDiv.appendChild(textDiv);
+                }
+            });
+        } catch (e) {
+            console.error('LaTeX preview error:', e);
+            previewDiv.innerHTML = `<span style="color: red;">LaTeX preview error: ${e.message}</span>`;
         }
     }, 300); // Debounce the preview update
 }
+
 
 function handleAddQuestion(event) {
     event.preventDefault();
