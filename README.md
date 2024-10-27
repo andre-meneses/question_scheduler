@@ -1,5 +1,13 @@
 # Question Scheduler: A Mathematical Learning System
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D14.0.0-brightgreen)](https://nodejs.org)
+[![Express.js](https://img.shields.io/badge/express.js-%5E4.17.1-blue)](https://expressjs.com)
+[![LaTeX Support](https://img.shields.io/badge/latex-KaTeX%20%26%20MathJax-orange)](https://katex.org)
+
+> A systematic approach to mathematical learning that balances thorough understanding with steady progress.
+
+
 ## Overview
 
 The Question Scheduler is a web-based application designed to help users learn mathematics through a structured, methodical approach. It implements a specific learning methodology that balances thorough understanding with steady progress. For a detailed explanation of the learning philosophy and methodology behind this system, please see [SPECIFICATION.md](SPECIFICATION.md).
@@ -21,6 +29,17 @@ The Question Scheduler is a web-based application designed to help users learn m
 - Real-time preview for LaTeX input
 - Session-based timer management
 - Responsive design for various screen sizes
+
+## Screenshots
+
+### Main Interface
+![Main Interface](docs/images/ui-mockup-main.svg)
+*Track your progress and work on questions with the main interface*
+
+### Add Question Interface
+![Add Question Interface](docs/images/ui-mockup-add-updated.svg)
+*Add new questions with LaTeX preview and formatting*
+
 
 ## Installation
 
