@@ -1,104 +1,98 @@
-# Question Scheduler Documentation
-## Mathematical Learning System
-
-### Table of Contents
-1. [Overview](#overview)
-2. [Installation](#installation)
-3. [Features](#features)
-4. [Usage Guide](#usage-guide)
-5. [Technical Documentation](#technical-documentation)
-6. [LaTeX Guide](#latex-guide)
-7. [Troubleshooting](#troubleshooting)
+# Question Scheduler: A Mathematical Learning System
 
 ## Overview
 
-The Question Scheduler is a web-based system designed to help users practice mathematical problems using a structured approach. It implements a specific learning methodology that balances thorough understanding with steady progress.
-
-### Core Principles
-- Systematic approach to problem-solving
-- Time management with progressive intervals
-- Special handling for challenging "never look up" problems
-- LaTeX support for mathematical notation
-- Local storage for progress tracking
-
-## Installation
-
-1. Create a new directory for the project:
-```bash
-mkdir question-scheduler
-cd question-scheduler
-```
-
-2. Create the following files:
-- index.html
-- styles.css
-- app.js
-- scheduler.js
-- mockData.js
-
-3. No server setup required - runs entirely in the browser
+The Question Scheduler is a web-based application designed to help users learn mathematics through a structured, methodical approach. It implements a specific learning methodology that balances thorough understanding with steady progress. For a detailed explanation of the learning philosophy and methodology behind this system, please see [SPECIFICATION.md](SPECIFICATION.md).
 
 ## Features
 
-### 1. Question Management
-- Add new questions with LaTeX support
-- Random question selection
-- Progress tracking
-- Time management
-- "Never look up" option for challenging problems
+### Core Functionality
+- Add and manage mathematical questions with LaTeX support
+- Structured practice sessions with time management
+- Random question selection based on availability and time constraints
+- Progress tracking and statistics
+- Special handling for "never look up" challenging problems
+- Comprehensive attempt history
+- Question deletion and management
 
-### 2. Time Management
-- Progressive session durations (15min → 30min → 1hr)
-- Total time allocation (3, 6, 9, or 12 hours)
-- Rest periods between attempts (3 hours minimum)
-- Automatic completion for time-exhausted questions
+### Technical Features
+- Full LaTeX rendering support (KaTeX and MathJax)
+- Backend persistence with Express
+- Real-time preview for LaTeX input
+- Session-based timer management
+- Responsive design for various screen sizes
 
-### 3. Question Types
-#### Regular Questions
-- Can be marked as complete when time is exhausted
-- Solutions can be viewed
-- Time-based completion
+## Installation
 
-#### Never Look Up Questions
-- Must be solved independently
-- No time-based completion
-- Remain in rotation until solved
-- Cannot view solutions
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/question-scheduler.git
+cd question-scheduler
+```
 
-### 4. Statistics Tracking
-- Total questions
-- Completed questions
-- In-progress questions
-- Never look up success rate
-- Attempt history
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Start the server:
+```bash
+npm start
+```
+
+4. Access the application at `http://localhost:3000`
+
+## Project Structure
+```
+question-scheduler/
+├── public/
+│   ├── index.html
+│   ├── styles.css
+│   ├── app.js
+│   └── scheduler.js
+├── server.js
+├── fileOperations.js
+├── questions.json
+├── SPECIFICATION.md
+├── README.md
+├── .gitignore
+└── package.json
+```
 
 ## Usage Guide
 
 ### Adding Questions
 
 1. Click the "Add Question" tab
-2. Fill in the question details:
+2. Fill in:
    - Source (e.g., "Rudin Chapter 3")
    - Problem description (supports LaTeX)
-   - Time allocation
+   - Time allocation (3, 6, 9, or 12 hours)
    - Subject matter
-   - Never look up option
+   - Never look up option (for problems you want to solve independently)
 
-Example with LaTeX:
+### LaTeX Support
+
+Use standard LaTeX notation:
+- Inline math: `$...$`
+- Display math: `$$...$$`
+
+Example:
+```latex
+Let $f: [a,b] \to \mathbb{R}$ be continuous. Prove that if
+$$\int_a^b f(x) dx = 0$$
+and $f(x) \geq 0$ for all $x \in [a,b]$, then $f(x) = 0$ for all $x \in [a,b]$.
 ```
-Let $f: [a,b] \to \mathbb{R}$ be continuous. Prove that if $$\int_a^b f(x) dx = 0$$ and $f(x) \geq 0$ for all $x \in [a,b]$, then $f(x) = 0$ for all $x \in [a,b]$.
-```
 
-### Working on Questions
+### Working with Questions
 
-1. Click "Get Next Question"
+1. Click "Get Next Question" to start a session
 2. The system will:
-   - Select a random available question
-   - Start the session timer
-   - Display question details
-
-3. After attempting the question:
-   - Click "Solved" if solved independently
+   - Select an available question
+   - Start a timed session
+   - Track progress
+3. After attempting:
+   - Click "Solved" if completed independently
    - Click "Not Solved" if solution was viewed
    - Click "Skip" to attempt later
 
@@ -108,115 +102,59 @@ Let $f: [a,b] \to \mathbb{R}$ be continuous. Prove that if $$\int_a^b f(x) dx = 
 - **Attempted**: Worked on but not completed
 - **Completed**: Successfully solved or time exhausted
 
-## Technical Documentation
+## Learning Philosophy
 
-### File Structure
-```
-question-scheduler/
-├── index.html      # Main HTML file
-├── styles.css      # Styling
-├── app.js          # UI logic
-├── scheduler.js    # Core scheduling logic
-└── mockData.js     # Sample questions
-```
+This system implements a structured learning approach where:
 
-### Core Classes
+1. **Regular Problems (2/3 of questions)**
+   - Initial 30-minute attempt limit
+   - Solution consultation allowed if needed
+   - Focus on understanding and learning from solutions
 
-#### QuestionScheduler
-```javascript
-class QuestionScheduler {
-    constructor()
-    addQuestion(questionData)
-    selectRandomQuestion()
-    completeQuestion(result, timeSpent)
-    getStats()
-}
-```
+2. **Advanced Problems (1/3 of questions)**
+   - Longer allocated thinking time (3-12 hours)
+   - Progressive attempt intervals (15min → 30min → 1hr)
+   - Some marked as "never look up" for independent mastery
 
-### Data Structures
+For more details on the learning methodology and philosophy, see [SPECIFICATION.md](SPECIFICATION.md).
 
-#### Question Object
-```javascript
-{
-    id: Number,
-    source: String,
-    problem: String,
-    totalTime: Number,        // Hours
-    remainingTime: Number,    // Minutes
-    subject: String,
-    status: String,          // 'new'|'in-progress'|'attempted'|'completed'
-    attempts: Array,
-    timeSpent: Number,
-    solvedIndependently: Boolean,
-    neverLookUp: Boolean,
-    created: Date
-}
-```
+## Technical Dependencies
 
-#### Attempt Object
-```javascript
-{
-    date: Date,
-    timeSpent: Number,
-    result: String           // 'solved'|'not-solved'|'skipped'
-}
-```
+- Node.js
+- Express.js
+- KaTeX (LaTeX rendering)
+- MathJax (additional math rendering support)
 
-## LaTeX Guide
-
-### Inline Math
-Use `$...$` for inline mathematical expressions:
-```latex
-The function $f(x) = x^2$ is continuous
-```
-
-### Display Math
-Use `$$...$$` for displayed equations:
-```latex
-$$\int_{0}^{\infty} e^{-x^2} dx = \frac{\sqrt{\pi}}{2}$$
-```
-
-### Common LaTeX Symbols
-- Greek letters: `$\alpha$`, `$\beta$`, `$\gamma$`
-- Sets: `$\mathbb{R}$`, `$\mathbb{Z}$`, `$\mathbb{N}$`
-- Operators: `$\sum$`, `$\prod$`, `$\int$`
-- Relations: `$\leq$`, `$\geq$`, `$\neq$`
-- Logic: `$\forall$`, `$\exists$`, `$\implies$`
-
-## Troubleshooting
-
-### Common Issues
-
-1. **LaTeX Not Rendering**
-   - Check KaTeX CDN links
-   - Verify LaTeX syntax
-   - Check browser console for errors
-
-2. **Timer Issues**
-   - Clear browser cache
-   - Check for multiple timer instances
-   - Verify time calculations
-
-3. **Data Persistence**
-   - Check localStorage availability
-   - Clear localStorage if corrupted
-   - Verify data structure
-
-### Browser Support
+## Browser Support
 - Chrome (recommended)
 - Firefox
 - Safari
 - Edge
 
-### Known Limitations
-1. Local storage limit (5-10 MB)
-2. No cloud synchronization
-3. Single device usage
-4. Browser restrictions apply
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## Future Enhancements
-1. Cloud synchronization
-2. Multiple device support
-3. Statistical analysis
-4. Export/import functionality
-5. Collaborative features
+
+Planned features:
+1. Question categories and tags
+2. Search and filter functionality
+3. Export/import capabilities
+4. Progress visualization
+5. Question difficulty ratings
+6. Study session summaries
+7. Offline mode support
+8. Mobile app version
+
+## Acknowledgments
+
+This project was inspired by the need for a structured approach to mathematical learning that balances thorough understanding with practical progress. The methodology is detailed in SPECIFICATION.md.
