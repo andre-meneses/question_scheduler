@@ -3,7 +3,6 @@ let scheduler;
 let timerInterval;
 let latexPreviewTimeout;
 
-
 window.onload = function() {
     scheduler = new QuestionScheduler();
     setupEventListeners();
@@ -22,9 +21,10 @@ function setupEventListeners() {
         problemTextarea.addEventListener('input', handleLatexPreview);
     }
 
+    // Add tab switching functionality
     document.querySelectorAll('.tab').forEach(tab => {
         tab.addEventListener('click', (e) => {
-            switchTab(e.target.dataset.tab);
+            switchTab(e.target.getAttribute('data-tab'));
         });
     });
 }
@@ -90,23 +90,38 @@ function handleLatexPreview() {
     }, 300); // Debounce the preview update
 }
 
-
-function handleAddQuestion(event) {
+async function handleAddQuestion(event) {
     event.preventDefault();
     
     const questionData = {
         source: document.getElementById('source').value,
         problem: document.getElementById('problem').value,
         totalTime: parseInt(document.getElementById('totalTime').value),
-        remainingTime: parseInt(document.getElementById('totalTime').value) * 60,
         subject: document.getElementById('subject').value,
         neverLookUp: document.getElementById('neverLookUp').checked
     };
 
-    scheduler.addQuestion(questionData);
-    event.target.reset();
-    updateUI();
-    switchTab('list');
+    try {
+        await scheduler.addQuestion(questionData);
+        event.target.reset();
+        switchTab('list');
+        updateUI();
+    } catch (error) {
+        console.error('Error adding question:', error);
+        alert('Failed to add question. Please try again.');
+    }
+}
+
+async function handleDeleteQuestion(questionId) {
+    if (confirm('Are you sure you want to delete this question? This action cannot be undone.')) {
+        try {
+            await scheduler.deleteQuestion(questionId);
+            updateUI();
+        } catch (error) {
+            console.error('Error deleting question:', error);
+            alert('Failed to delete question. Please try again.');
+        }
+    }
 }
 
 function handleNextQuestion() {
@@ -115,20 +130,59 @@ function handleNextQuestion() {
     updateUI();
 }
 
-function completeCurrentQuestion(result) {
+async function completeCurrentQuestion(result) {
     if (!scheduler.currentQuestion) return;
     
-    clearInterval(timerInterval);
+    // Clear timer
+    if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
+    
     const timeSpent = scheduler.currentQuestion.currentSessionTime;
-    scheduler.completeQuestion(result, timeSpent);
+    await scheduler.completeQuestion(result, timeSpent);
     updateUI();
+}
+
+function switchTab(tab) {
+    // Update tab buttons
+    document.querySelectorAll('.tab').forEach(t => {
+        t.classList.remove('active');
+        if (t.getAttribute('data-tab') === tab) {
+            t.classList.add('active');
+        }
+    });
+    
+    // Hide all tab contents
+    document.getElementById('currentTab').style.display = 'none';
+    document.getElementById('addTab').style.display = 'none';
+    document.getElementById('listTab').style.display = 'none';
+    
+    // Show selected tab content
+    document.getElementById(`${tab}Tab`).style.display = 'block';
 }
 
 function startSessionTimer(minutes) {
     clearInterval(timerInterval);
     let timeLeft = minutes * 60;
+    let startTime = Date.now();
     
     function updateTimer() {
+        const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
+        timeLeft = (minutes * 60) - elapsedSeconds;
+        
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            const timerElement = document.getElementById('sessionTimer');
+            if (timerElement) {
+                timerElement.textContent = 'Time is up!';
+            }
+            if (scheduler.currentQuestion && !scheduler.currentQuestion.neverLookUp) {
+                completeCurrentQuestion('not-solved');
+            }
+            return;
+        }
+        
         const minutesLeft = Math.floor(timeLeft / 60);
         const secondsLeft = timeLeft % 60;
         const timerElement = document.getElementById('sessionTimer');
@@ -136,15 +190,6 @@ function startSessionTimer(minutes) {
         if (timerElement) {
             timerElement.textContent = 
                 `Time remaining: ${minutesLeft}:${secondsLeft.toString().padStart(2, '0')}`;
-            
-            if (timeLeft <= 0) {
-                clearInterval(timerInterval);
-                alert('Session time is up!');
-                if (!scheduler.currentQuestion.neverLookUp) {
-                    completeCurrentQuestion('not-solved');
-                }
-            }
-            timeLeft--;
         } else {
             clearInterval(timerInterval);
         }
@@ -154,15 +199,13 @@ function startSessionTimer(minutes) {
     timerInterval = setInterval(updateTimer, 1000);
 }
 
-function switchTab(tab) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
-    
-    document.getElementById('currentTab').style.display = 'none';
-    document.getElementById('addTab').style.display = 'none';
-    document.getElementById('listTab').style.display = 'none';
-    
-    document.getElementById(`${tab}Tab`).style.display = 'block';
+function updateStats() {
+    const stats = scheduler.getStats();
+    document.getElementById('totalQuestions').textContent = stats.total;
+    document.getElementById('completedQuestions').textContent = stats.completed;
+    document.getElementById('inProgressQuestions').textContent = stats.inProgress;
+    document.getElementById('neverLookUpSolved').textContent = 
+        `${stats.neverLookUpSolved}/${stats.neverLookUpTotal}`;
 }
 
 function updateCurrentQuestion() {
@@ -173,7 +216,7 @@ function updateCurrentQuestion() {
         container.innerHTML = `
             <div class="question-card ${question.neverLookUp ? 'never-lookup' : ''}">
                 <h3>${question.source}</h3>
-                <p class="problem-text">${question.problem}</p>
+                <div class="problem-text">${question.problem}</div>
                 <div class="question-details">
                     <p><strong>Total Time Remaining:</strong> ${(question.remainingTime / 60).toFixed(1)} hours</p>
                     <p><strong>Current Session Time:</strong> ${question.currentSessionTime} minutes</p>
@@ -181,9 +224,7 @@ function updateCurrentQuestion() {
                     <p><strong>Type:</strong> ${question.neverLookUp ? 'Never Look Up' : 'Regular'}</p>
                     <p><strong>Attempts:</strong> ${question.attempts.length}</p>
                 </div>
-                <div class="timer" id="sessionTimer">
-                    Time remaining: ${question.currentSessionTime}:00
-                </div>
+                <div class="timer" id="sessionTimer"></div>
                 <div class="button-group">
                     <button class="btn btn-success" onclick="completeCurrentQuestion('solved')">
                         Solved
@@ -214,7 +255,6 @@ function updateCurrentQuestion() {
     }
 }
 
-// Modify the updateQuestionList function to properly render LaTeX
 function updateQuestionList() {
     const container = document.getElementById('questionList');
     
@@ -229,8 +269,17 @@ function updateQuestionList() {
 
     container.innerHTML = scheduler.questions.map(q => `
         <div class="question-card ${q.status} ${q.neverLookUp ? 'never-lookup' : ''}">
-            <h3>${q.source}</h3>
-            <p class="problem-text">${q.problem}</p>
+            <div class="question-header">
+                <h3>${q.source}</h3>
+                <button 
+                    class="btn btn-delete" 
+                    onclick="handleDeleteQuestion(${q.id})"
+                    title="Delete question"
+                >
+                    ×
+                </button>
+            </div>
+            <div class="problem-text">${q.problem}</div>
             <div class="question-details">
                 <p><strong>Status:</strong> <span class="status-badge ${q.status}">${q.status}</span></p>
                 <p><strong>Type:</strong> ${q.neverLookUp ? 'Never Look Up' : 'Regular'}</p>
@@ -262,21 +311,15 @@ function updateQuestionList() {
     }
 }
 
-function updateStats() {
-    const stats = scheduler.getStats();
-    document.getElementById('totalQuestions').textContent = stats.total;
-    document.getElementById('completedQuestions').textContent = stats.completed;
-    document.getElementById('inProgressQuestions').textContent = stats.inProgress;
-    document.getElementById('neverLookUpSolved').textContent = 
-        `${stats.neverLookUpSolved}/${stats.neverLookUpTotal}`;
-}
-
 function updateUI() {
     updateStats();
     updateCurrentQuestion();
     updateQuestionList();
 }
 
+// Make functions available globally
 window.handleNextQuestion = handleNextQuestion;
 window.completeCurrentQuestion = completeCurrentQuestion;
 window.switchTab = switchTab;
+window.handleDeleteQuestion = handleDeleteQuestion;
+window.handleAddQuestion = handleAddQuestion;
