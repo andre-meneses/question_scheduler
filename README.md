@@ -12,12 +12,7 @@
 1. [Quick Start](#quick-start)
 2. [Overview](#overview)
 3. [Screenshots and Interface](#screenshots)
-   - [Main Interface](#main-interface)
-   - [Add Question Interface](#add-question-interface)
-   - [Interface Components](#interface-components)
 4. [Features](#features)
-   - [Core Features](#core-features)
-   - [Technical Features](#technical-features)
 5. [Installation](#installation)
    - [Prerequisites](#prerequisites)
    - [Setup Steps](#setup-steps)
@@ -30,9 +25,6 @@
    - [Question States](#question-states)
    - [Time Management](#time-management)
 7. [Learning Methodology](#learning-methodology)
-   - [Regular Problems](#regular-problems)
-   - [Advanced Problems](#advanced-problems)
-   - [Best Practices](#best-practices)
 8. [Technical Documentation](#technical-documentation)
    - [Project Structure](#project-structure)
    - [API Reference](#api-reference)
@@ -264,27 +256,7 @@ interface Attempt {
   result: 'solved' | 'not-solved' | 'skipped';
 }
 ```
-
-## Troubleshooting
-
-### Common Issues
-
-1. **LaTeX Rendering**
-   - Ensure proper delimiter usage
-   - Check for matching brackets
-   - Verify symbol compatibility
-
-2. **Time Management**
-   - Browser tab focus issues
-   - Session persistence
-   - Timer synchronization
-
-3. **Data Management**
-   - Local storage limits
-   - Data backup considerations
-   - Import/export functionality
-
-### FAQ
+## FAQ
 
 1. **Q: How are questions selected?**
    A: Questions are randomly selected from the set of available problems, considering time constraints and attempt history.
