@@ -78,48 +78,6 @@ For a detailed explanation of the learning philosophy and methodology behind thi
 ![Main Interface](docs/images/ui-mockup-main.svg)
 *The main interface shows your current statistics, active question, and timer. The interface is organized into three main sections:*
 
-#### Interface Components
-1. **Statistics Dashboard**
-   - Total Questions Counter
-   - Completion Statistics
-   - Progress Indicators
-   - Never Look Up Success Rate
-
-2. **Navigation Tabs**
-   - Current Question View
-   - Add Question Interface
-   - Question List Overview
-
-3. **Active Question Area**
-   - Problem Display with LaTeX Rendering
-   - Timer with Visual Feedback
-   - Action Buttons
-     - Solved
-     - Not Solved
-     - Skip
-
-### Add Question Interface
-![Add Question Interface](docs/images/ui-mockup-add-updated.svg)
-*The add question interface provides:*
-
-#### Input Components
-1. **Problem Input**
-   - LaTeX-enabled text area
-   - Real-time preview
-   - Syntax highlighting
-
-2. **Metadata Fields**
-   - Source reference
-   - Subject classification
-   - Time allocation selector
-   - Never Look Up toggle
-
-3. **Preview Panel**
-   - Rendered LaTeX preview
-   - Mobile view preview
-   - Print layout preview
-
-
 ## Features
 
 ### Core Features
