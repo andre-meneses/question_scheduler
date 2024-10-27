@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question Scheduler - Mathematical Learning System</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Question Scheduler</h1>
+            <p>Mathematical Learning System</p>
+        </header>
+
+        <div class="stats">
+            <div class="stat-card">
+                <h3>Total Questions</h3>
+                <p id="totalQuestions">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Completed</h3>
+                <p id="completedQuestions">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>In Progress</h3>
+                <p id="inProgressQuestions">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Never Look Up Solved</h3>
+                <p id="neverLookUpSolved">0</p>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" data-tab="current">Current Question</div>
+            <div class="tab" data-tab="add">Add Question</div>
+            <div class="tab" data-tab="list">All Questions</div>
+        </div>
+
+        <div id="currentTab" class="card">
+            <h2>Current Question</h2>
+            <div id="currentQuestion">
+                <p>No question selected</p>
+                <button class="btn" onclick="handleNextQuestion()">Get Next Question</button>
+            </div>
+        </div>
+
+        <div id="addTab" class="card" style="display: none;">
+            <h2>Add New Question</h2>
+            <form id="addQuestionForm">
+                <div class="form-group">
+                    <label for="source">Source</label>
+                    <input type="text" id="source" required placeholder="e.g., Rudin Chapter 3">
+                </div>
+                <div class="form-group">
+                    <label for="problem">Problem Description</label>
+                    <textarea id="problem" required rows="4" placeholder="Enter the problem description. Use $ for inline LaTeX and $$ for display LaTeX."></textarea>
+                    <div class="preview-container">
+                        <h4>Preview:</h4>
+                        <div id="problemPreview" class="latex-preview"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="totalTime">Total Time Allocation (hours)</label>
+                    <select id="totalTime" required>
+                        <option value="3">3 hours</option>
+                        <option value="6">6 hours</option>
+                        <option value="9">9 hours</option>
+                        <option value="12">12 hours</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="subject">Subject Matter</label>
+                    <input type="text" id="subject" required placeholder="e.g., Real Analysis">
+                </div>
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="neverLookUp">
+                        Never Look Up (solution should never be viewed)
+                    </label>
+                </div>
+                <button type="submit" class="btn">Add Question</button>
+            </form>
+        </div>
+
+        <div id="listTab" class="card" style="display: none;">
+            <h2>All Questions</h2>
+            <div id="questionList" class="question-list">
+                <!-- Questions will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="mockData.js"></script>
+    <script src="scheduler.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
