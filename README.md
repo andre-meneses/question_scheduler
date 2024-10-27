@@ -1,25 +1,44 @@
-# Question Scheduler
+# A Question Scheduler: A Mathematical Learning System
 
-## An informal specification
+## Motivation
+Mathematics is not a spectator sport, as the saying goes. To achieve a deep understanding of mathematics, one must actively engage with and struggle through exercises. However, for most people outside the realm of math students, balancing thorough mathematical understanding with reasonable progress presents a challenging dilemma: How can one develop a strong foundation while advancing at a satisfactory pace? How can one both learn extensively and learn well?
 
-"Mathematics is not a spectator sport," as the saying goes. Achieving a profound understanding of mathematics requires grappling with exercises and working through challenging problems. However, for most people outside the realm of professional mathematicians and math students, finding the time to engage deeply with difficult problems while progressing through new material at a reasonable pace is a genuine challenge. This dilemma presents itself: how does one build a solid foundation in mathematics while advancing steadily? How can one both "know it all" (at least as far as one desires) and "know it well"?
+## The Learning Challenge
+While patience and perseverance traditionally lead to well-cemented knowledge, this approach alone feels insufficient. Mathematical intuition develops through problem-solving, and though consulting solutions is often discouraged in mathematical education, I argue it can be a valuable tool when used thoughtfully. Studying and absorbing others' solutions can enable one to solve similar problems and generalize concepts to new contexts. However, exclusively reviewing solutions would atrophy critical thinking and independent problem-solving skills.
 
-One might argue that persistence and patience are the key—that a strong, well-cemented knowledge will come with time. While this is a reasonable approach, it doesn’t fully satisfy my own aspirations. To master complex problems and develop a deeper intuition, one must actively engage in problem-solving, and in my view, occasionally relying on solutions can be constructive. Understanding and internalizing a solution, even if it was not self-derived, allows one to approach similar problems with a more nuanced perspective and extend that knowledge to other areas. However, if one becomes too dependent on solutions, crucial skills in problem-solving, independent thinking, and critical analysis risk being underdeveloped.
+## Proposed Methodology
+To address these challenges, I propose the following structured approach:
 
-With these considerations in mind, I have devised a personal approach to studying mathematics, guided by a few core principles:
+### Basic Problem-Solving Protocol (2/3 of problems)
+1. Set a 30-minute limit for initial problem-solving attempts
+2. If unsuccessful, consult and thoroughly internalize the solution
+3. Maintain a requirement of fully understanding 2/3 of any problem set, regardless of whether solutions were reached independently or through studying others' approaches
 
-1. **Divide and Conquer the Problem Set**: For any given set of problems, my goal is to fully solve and understand two-thirds of the problems, regardless of whether I arrive at the solution independently or by studying a provided solution. This approach allows me to build intuition without excessive time commitment.
+### Advanced Problem-Solving Protocol (1/3 of problems)
+1. Select challenging problems for a special queue
+2. Assign each problem a total thinking time (3-12 hours)
+3. Break down problem-solving sessions into progressive intervals:
+   - First attempt: 15 minutes
+   - Second attempt: 30 minutes
+   - Third attempt: 1 hour
+4. Utilize "idle time" for background processing between attempts
+5. Review solutions only after depleting allocated time, with some problems designated as "never look up"
 
-2. **Time-Limited Problem-Solving**: I allow myself up to 30 minutes to solve each problem. If I reach the limit without success, I review the solution carefully, working to internalize the method as thoroughly as possible.
+## Implementation Philosophy
+While one could approach this system with sophisticated operations research techniques to optimize learning outcomes, I prefer maintaining simplicity and personal discretion. The selection of problems follows a uniform distribution, where:
+- Each problem has equal probability of being chosen
+- Previous attempts and remaining time don't influence selection probability
+- Assignment of total thinking time and "never look up" status remains discretionary
 
-3. **The "Difficult Third"**: For the remaining one-third of problems that I cannot solve, I assign a total “thinking time” ranging from 3 to 12 hours. However, this time is spread across several sessions, with intervals that increase incrementally: starting with 15 minutes, then progressing to 30 minutes, and finally to one-hour sessions. This staggered approach allows me to use “idle time” to keep challenging problems in the back of my mind, leveraging subconscious cognitive processing.
+## Program Objective
+This specification outlines a question scheduler that will:
+1. Randomly select problems for solving sessions
+2. Track essential metadata:
+   - Problem source
+   - Attempt history
+   - Time allocation and usage
+   - Problem type and subject matter
+   - Current status
 
-   - For instance, if a problem has a total thinking time of 3 hours, the first attempt will last only 15 minutes. If I don’t solve it within that period, I move on to the next problem. On the next round with this problem, I allot 30 minutes, then one hour on the third attempt, and so forth.
+While simple in design, this system aims to balance thorough understanding with steady progress, maintaining both rigor and practicality in mathematical learning.
 
-4. **Solution-Limited Problems**: Some problems will be selected to remain unsolved indefinitely, without ever consulting the solution. If I never solve them, so be it.
-
-Assignments to this challenging third, the choice of thinking time, and the decision to never view certain solutions are at my discretion. While this approach could undoubtedly be optimized with sophisticated methods or operations research, such as maximizing learning within limited time constraints, I prefer a more intuitive approach, at least for now.
-
-5. **Uniform Random Selection**: Problems are chosen randomly for each session, without factoring in the number of previous attempts or the remaining thinking time.
-
-Hence, this program will act as a straightforward question scheduler, designed to randomly draw problems for each session while tracking metadata, such as the source, attempts made, current session time, total thinking time, problem type, and subject area. I envision it as a simple but hopefully effective tool for systematic mathematical learning.
