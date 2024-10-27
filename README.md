@@ -26,7 +26,7 @@ The Question Scheduler is a web-based application designed to help users learn m
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/question-scheduler.git
+git clone https://github.com/andre-meneses/question-scheduler.git
 cd question-scheduler
 ```
 
